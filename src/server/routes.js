@@ -6,6 +6,10 @@ import { connection } from "../db/connection";
 
 const router = express.Router();
 
+router.get("/check", (_, res) => {
+  res.json({ status: true });
+});
+
 router.get("/students", async (req, res) => {
   try {
     let students,
