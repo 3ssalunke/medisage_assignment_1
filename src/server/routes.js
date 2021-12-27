@@ -6,9 +6,20 @@ import { connection } from "../db/connection";
 
 const router = express.Router();
 
-router.get("/students", async (_, res) => {
+router.get("/students", async (req, res) => {
   try {
-    const students = await connection("student");
+    let students,
+      { search } = req.query;
+    if (!search) {
+      students = await connection("student");
+    } else {
+      students = await connection("student")
+        .where("name", "like", `%${search}%`)
+        .orWhere("email", "like", `%${search}%`)
+        .orWhere("phone_number", "like", `${search}`)
+        .orWhere("country", "like", `${search}`)
+        .orWhere("country_code", "like", `${search}`);
+    }
     return res.json(students);
   } catch (error) {
     console.error(error.message);
